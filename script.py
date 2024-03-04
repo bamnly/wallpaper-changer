@@ -1,3 +1,4 @@
+# Download the new-bg
 import requests
 
 # URL of the file to download
@@ -14,3 +15,24 @@ if response.status_code == 200:
     print("File downloaded successfully.")
 else:
     print("Failed to download file.")
+
+
+
+
+
+# Set up the new-bg
+import ctypes
+import os
+
+def set_wallpaper(image_path):
+    # Get path to image
+    image_path = os.path.abspath(image_path)
+    
+    # Define SPI_SETDESKWALLPAPER constant
+    SPI_SETDESKWALLPAPER = 20
+    
+    # Set wallpaper
+    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path, 3)
+
+# Call the function with the path to the downloaded image
+set_wallpaper("new-bg.png")
