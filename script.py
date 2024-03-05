@@ -55,8 +55,10 @@ def main():
     documents_directory = Path.home() / "Documents"
 
     # Download the image file
-    image_url = "https://raw.githubusercontent.com/bamnly/wallpaper-changer/main/images/new-bg.png"
-    image_path = documents_directory / "new-bg.png"
+        # image_url = "https://raw.githubusercontent.com/bamnly/wallpaper-changer/main/images/new-bg.png"
+        # image_path = documents_directory / "new-bg.png"
+    image_url = "https://github.com/bamnly/wallpaper-changer/blob/main/images/new-bg-max-verstappen.png"
+    image_path = documents_directory / "new-bg-max-verstappen.png"
     if not image_path.exists():
         download_file(image_url, image_path)
 
