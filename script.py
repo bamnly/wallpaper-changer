@@ -1,51 +1,23 @@
-# ========== Download the new-bg ==========
+import os
 import requests
-
-# URL of the file to download
-file_url = "https://raw.githubusercontent.com/bamnly/wallpaper-changer/main/images/new-bg.png"
-
-# Send a GET request to the file URL
-response = requests.get(file_url)
-
-# Check if the request was successful (status code 200)
-if response.status_code == 200:
-    # Save the content of the file
-    with open("new-bg.png", "wb") as f:
-        f.write(response.content)
-    print("File downloaded successfully.")
-else:
-    print("Failed to download file.")
-
-
-
-# ========== Set up the new-bg ==========
+from pathlib import Path
 import ctypes
-import os
-
-def set_wallpaper(image_path):
-    # Get path to image
-    image_path = os.path.abspath(image_path)
-    
-    # Define SPI_SETDESKWALLPAPER constant
-    SPI_SETDESKWALLPAPER = 20
-    
-    # Set wallpaper
-    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path, 3)
-
-# Call the function with the path to the downloaded image
-set_wallpaper("new-bg.png")
-
-
-
-
-
-# ========== Download and launch music ==========
-
-import os
 import platform
 import pygame
-import requests
 
+# Function to download and save the file
+def download_file(url, filename):
+    response = requests.get(url)
+    with open(filename, 'wb') as file:
+        file.write(response.content)
+
+# Function to set the wallpaper
+def set_wallpaper(image_path):
+    image_path = os.path.abspath(image_path)
+    SPI_SETDESKWALLPAPER = 20
+    ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path, 3)
+
+# Function to play the sound
 def play_sound(sound_file):
     if platform.system() == "Windows":
         pygame.mixer.init()
@@ -60,17 +32,22 @@ def play_sound(sound_file):
     else:
         print("Unsupported operating system.")
 
-def download_sound(url, filename):
-    response = requests.get(url)
-    with open(filename, 'wb') as file:
-        file.write(response.content)
-
 if __name__ == "__main__":
-    sound_file = "tu-tu-tu-du-max-verstappen.mp3"
-    url = "https://github.com/bamnly/wallpaper-changer/raw/main/sounds/tu-tu-tu-du-max-verstappen.mp3"
+    # Get the user's Documents directory
+    documents_directory = Path.home() / "Documents"
 
-    # Download the sound file if it doesn't exist
-    if not os.path.exists(sound_file):
-        download_sound(url, sound_file)
+    # Download the image file
+    image_url = "https://raw.githubusercontent.com/bamnly/wallpaper-changer/main/images/new-bg.png"
+    image_path = documents_directory / "new-bg.png"
+    if not image_path.exists():
+        download_file(image_url, image_path)
 
+    # Set the wallpaper
+    set_wallpaper(image_path)
+
+    # Download and play the sound file
+    sound_url = "https://github.com/bamnly/wallpaper-changer/raw/main/sounds/tu-tu-tu-du-max-verstappen.mp3"
+    sound_file = documents_directory / "tu-tu-tu-du-max-verstappen.mp3"
+    if not sound_file.exists():
+        download_file(sound_url, sound_file)
     play_sound(sound_file)
