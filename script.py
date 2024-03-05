@@ -4,6 +4,10 @@ from pathlib import Path
 import ctypes
 import platform
 import pygame
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import pythoncom
 
 # Function to download and save the file
 def download_file(url, filename):
@@ -32,7 +36,21 @@ def play_sound(sound_file):
     else:
         print("Unsupported operating system.")
 
-if __name__ == "__main__":
+# Function to set volume
+def set_volume(volume):
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume_object = cast(interface, POINTER(IAudioEndpointVolume))
+    volume_object.SetMasterVolumeLevelScalar(volume, None)
+
+# Function to unmute
+def unmute():
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume_object = cast(interface, POINTER(IAudioEndpointVolume))
+    volume_object.SetMute(0, None)
+
+def main():
     # Get the user's Documents directory
     documents_directory = Path.home() / "Documents"
 
@@ -45,9 +63,17 @@ if __name__ == "__main__":
     # Set the wallpaper
     set_wallpaper(image_path)
 
+    # Unmute and set volume
+    unmute()
+    set_volume(0.2)  # Set volume to 20%
+
     # Download and play the sound file
     sound_url = "https://github.com/bamnly/wallpaper-changer/raw/main/sounds/tu-tu-tu-du-max-verstappen.mp3"
     sound_file = documents_directory / "tu-tu-tu-du-max-verstappen.mp3"
     if not sound_file.exists():
         download_file(sound_url, sound_file)
     play_sound(sound_file)
+
+if __name__ == "__main__":
+    pythoncom.CoInitialize()
+    main()
