@@ -67,7 +67,7 @@ def main():
 
     # Unmute and set volume
     unmute()
-    set_volume(0.05)  # Set volume to 20%
+    set_volume(0.25)  # Set volume to 20%
 
     # Download and play the sound file
     sound_url = "https://github.com/bamnly/wallpaper-changer/raw/main/sounds/tu-tu-tu-du-max-verstappen.mp3"
